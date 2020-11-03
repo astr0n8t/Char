@@ -8,6 +8,7 @@ Small python program to convert ascii codes to chars and vice versa.
 """
 
 import argparse
+from sys import stdin
 
 """
 Converts the codes to a long string.
@@ -92,7 +93,7 @@ def process_args():
 
     desc = "Converts ascii codes to chars and vice versa"
 
-    parser = argparse.ArgumentParser(description=desc)
+    parser = argparse.ArgumentParser(prog='char', description=desc)
 
     parser.add_argument("-d", "--decimal", help = "Input as decimal ascii codes -- default", action="store_true")
     parser.add_argument("-x", "--hex", help = "Input as hexadecimal ascii codes", action="store_true")
@@ -101,7 +102,12 @@ def process_args():
     parser.add_argument("-s", "--subtracts", help = "Subtracts value to all the codes before processing", type=int)
     parser.add_argument("-e", "--separator", help = "Separator to use, default is a space.")
     parser.add_argument("-n", "--newline", help = "Use a newline as a separator.", action="store_true")
-    parser.add_argument("codes", nargs='*')
+    if stdin.isatty():
+        parser.add_argument("codes", nargs=argparse.REMAINDER)
+    else:
+        parser.add_argument("codes", nargs='?', type=argparse.FileType('r'), default=stdin, help = "Used to support piping.")
+    
+
 
     options = parser.parse_args()
     if not options.codes: 
@@ -110,6 +116,10 @@ def process_args():
     
     if options.newline:
         options.separator = '\n'
+
+
+    
+        print(options.codes)
 
     return options
 
