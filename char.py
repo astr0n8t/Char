@@ -37,12 +37,20 @@ def format_codes(d, h, b, s, codes):
 
     code_array = []
 
-    if s:
-        code_temp = ""
-        for x in range(len(codes)):
-            code_temp += codes[x] 
-        codes = code_temp.split(s)
-        
+    if not s:
+        s = ' ' 
+
+    code_temp = ""
+    for x in codes:
+        code_temp += x
+        if isinstance(codes, list):
+            code_temp += s
+
+
+    codes = code_temp.split(s)
+
+    if codes[-1] == '\n':
+        codes = codes[0:len(codes) - 2]
 
     base_to_convert = 10
 
@@ -54,9 +62,10 @@ def format_codes(d, h, b, s, codes):
         base_to_convert = 2
 
     for i in codes:
-        if int(i, base=base_to_convert) > 127 or int(i, base=base_to_convert) < 0:
-            raise Exception('given value ' + i + ' outside of bounds of ascii table using given options.')
-        code_array.append(int(i, base=base_to_convert))
+        if i:
+            if (int(i, base=base_to_convert) > 127 or int(i, base=base_to_convert) < 0):
+                raise Exception('given value ' + i + ' outside of bounds of ascii table using given options.')
+            code_array.append(int(i, base=base_to_convert))
 
     return code_array
 
